@@ -145,7 +145,7 @@ class RequestParser(object):
                     if analytics_arr_exists:
                         analytics_arr.update({name: ArrayUnion([visit_data])})
                     else:
-                        analytics_arr.set({name: visit_data}, merge=True)
+                        analytics_arr.set({name: [visit_data]}, merge=True)
                         analytics_arr_exists = True
                     continue
                 if name == "SESSION_STORAGE_DATA":
@@ -157,7 +157,7 @@ class RequestParser(object):
                     if analytics_arr_exists:
                         analytics_arr.update({name: ArrayUnion([sess_data])})
                     else:
-                        analytics_arr.set({name: sess_data}, merge=True)
+                        analytics_arr.set({name: [sess_data]}, merge=True)
                         analytics_arr_exists = True
                     continue
                 if name == "ACTIONS":
@@ -169,7 +169,7 @@ class RequestParser(object):
                     if manager.document_exists(actions_arr):
                         actions_arr.update({name: ArrayUnion([action_data])})
                     else:
-                        actions_arr.set({name: action_data})
+                        actions_arr.set({name: [action_data]})
                     continue
             return {"success": True}
         else:
