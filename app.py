@@ -3,7 +3,6 @@ from secrets import token_urlsafe
 from typing import Optional
 
 from flask import render_template, request, Response
-from sqlalchemy.orm.attributes import flag_modified
 
 import constants
 from app_data import app
