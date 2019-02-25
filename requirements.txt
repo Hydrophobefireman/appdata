@@ -2,6 +2,4 @@ firebase_admin==2.15.1
 Flask==1.0.2
 passlib==1.7.1
 protobuf==3.6.1
-secrets==1.0.2
-typing==3.6.6
 gunicorn==19.9.0
