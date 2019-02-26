@@ -70,7 +70,7 @@ def get_data():
     # }
     data = request.get_json()
     data["transaction_type"] = constants.DATA_MANAGE_TRANSACTION_TYPE
-    data["$origin"] = 1
+    data["site_id"] = "1"
     return jsonify(request_parser.parse_request(data))
 
 
