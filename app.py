@@ -11,6 +11,15 @@ from utils import jsonify, redirect, send_file
 
 
 request_parser: RequestParser = RequestParser()
+
+
+@app.route("/")
+def index_page():
+    # TODO Dashboard?
+    # probably gonna make it a SPA
+    return render_template("index.html")
+
+
 # /api/v1/
 @app.route(constants.MAIN_ENDPOINT, methods=constants.SUPPORTED_METHODS)
 def main_api():
@@ -45,6 +54,23 @@ def resp_headers(resp):
     )
     resp.headers["access-control-allow-credentials"] = "true"
     return resp
+
+
+@app.route("/get-data/", methods=constants.SUPPORTED_METHODS)
+def get_data():
+    # data: dict = request.form
+    # origin: dict = data.get("$origin")
+    # password: str = data.get("pass")
+    # site_id: str = data.get("site_id")
+    # ret = {
+    #     "$or"
+    # "db_action": constants.DB_ACTION_READ_TYPE,
+    #     "password": password,
+    #     "site_id": site_id,
+    # }
+    data = request.get_json()
+    data["transaction_type"] = constants.DATA_MANAGE_TRANSACTION_TYPE
+    return jsonify(request_parser.parse_request(data))
 
 
 if __name__ == "__main__":

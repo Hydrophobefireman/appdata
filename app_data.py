@@ -10,13 +10,6 @@ set_env_vars()
 app: Flask = Flask(__name__)
 app.secret_key: str = os.environ.get("FLASK-app-secret-key")
 
-
-@app.route("/")
-def index_page():
-    # TODO Dashboard?
-    return render_template("index.html")
-
-
 @app.route(constants.DEFAULT_SCRIPT_LOCATION)
 @app.route("/data-latest.js")
 def script_file_latest():

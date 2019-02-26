@@ -5,6 +5,7 @@ from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1beta1 import (
     ArrayUnion,
     CollectionReference,
+    DocumentSnapshot,
     DocumentReference,
 )
 
@@ -75,16 +76,20 @@ class RequestParser(object):
             )
             if not manager.document_exists(meta_doc):
                 return self._err("Incorrect username or password")
-            site_id = meta_doc.get().get("site_id")
-            if not check_password_hash(meta_doc.get, pw):
+            doc_snap_shot: DocumentSnapshot = meta_doc.get()
+            site_id = doc_snap_shot.get("site_id")
+            if not check_password_hash(doc_snap_shot.get("hashedPassword"), pw):
                 return self._err("Incorrect username or password")
 
             doc: CollectionReference = manager.get_collection(
                 f"/{SITE_DATA}/{site_id}/{ANALYTICS}"
             )
-            if not manager.document_exists(doc):
-                return self._err("No analytics for the given document")
-            return {"data": doc.get().to_dict()}
+            actions_doc_snap: DocumentSnapshot = doc.document("ACTIONS").get()
+            visiter_doc_snap: DocumentSnapshot = doc.document("VISITOR_DATA").get()
+            return {
+                "actions": actions_doc_snap.to_dict(),
+                "visitor_data": visiter_doc_snap.to_dict(),
+            }
         if data_action == WRITE_TYPE:
             """js_data should be a dictionary with the keys:
             INTERNAL_JSON_CONFIG_DATA,INDIVIDUAL_VISIT_DATA,SESSION_STORAGE_DATA
@@ -116,14 +121,15 @@ class RequestParser(object):
                 if set_by_server:
                     """Values that will be set by the server..like VIEW_COUNT"""
                     data_fields: DocumentReference = col.document(name)
+                    data_field_snapshot: DocumentSnapshot = data_fields.get()
                     if name == "VIEW_COUNT" and self.js_data.get("update_view_count"):
                         if manager.document_exists(data_fields):
                             data_fields.update(
-                                {"value": data_fields.get().get("value") + 1}
+                                {"value": data_field_snapshot.get("value") + 1}
                             )
                         else:
                             data_fields.set(
-                                {"value": data_fields.get().get("value") + 1}
+                                {"value": data_field_snapshot.get("value") + 1}
                             )
                         continue
                 if name == "INTERNAL_JSON_CONFIG_DATA":
@@ -198,7 +204,10 @@ class RequestParser(object):
         )
         return True
 
-    def parse_request(self, js_data: dict, headers: dict) -> int:
+    def get_db_data(self, origin, site_id, pw):
+        return manager.get_document
+
+    def parse_request(self, js_data: dict, headers: dict = {}) -> int:
         """parsed a request made by the user..preferred method is post
         
         Args:

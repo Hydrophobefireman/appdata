@@ -6,9 +6,51 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
     />
-    <title>app data</title>
+    <title>ssl-appdata</title>
+    <meta name="description" content="Web App Analytics Powered By Firebase" />
+    <meta property="og:title" content="ssl-appdata" />
+    <meta property="og:site_name" content="SSL AppData" />
+    <meta property="og:url" content="https://ssl-appdata.herokuapp.com" />
+    <meta
+      property="og:description"
+      content="Web App Analytics Powered By Firebase"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="keywords" content="app data analytics secure" />
   </head>
   <body>
-    <div id="app-root"></div>
+    <div id="app-root">
+      TODO - you can download the data as json though
+      <div><input type="text" id="site-id" placeholder="site id" /></div>
+      <div><input type="text" id="site-host" placeholder="site host" /></div>
+      <div><input type="password" id="password" placeholder="password" /></div>
+      <div><button>Go</button></div>
+      <script>
+        const $ = e => document.querySelector(e);
+        const id = $("#site-id");
+        const host = $("#site-host");
+        const pw = $("#password");
+        const button = $("button");
+        button.onclick = async () => {
+          const data = JSON.stringify({
+            $origin: host.value,
+            password: pw.value,
+            site_id: id.value,
+            db_action: 2
+          });
+          const ret = await fetch("/get-data/", {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: data
+          });
+          const js = await ret.json();
+          const d = JSON.stringify(js, null, 2);
+          const pre = document.createElement("pre");
+          pre.textContent = d;
+          document.body.innerHTML = "";
+          document.body.appendChild(pre);
+        };
+      </script>
+    </div>
   </body>
 </html>
