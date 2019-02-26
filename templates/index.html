@@ -21,7 +21,6 @@
   <body>
     <div id="app-root">
       TODO - you can download the data as json though
-      <div><input type="text" id="site-id" placeholder="site id" /></div>
       <div><input type="text" id="site-host" placeholder="site host" /></div>
       <div><input type="password" id="password" placeholder="password" /></div>
       <div><button>Go</button></div>
@@ -34,7 +33,6 @@
           const data = JSON.stringify({
             $origin: host.value,
             password: pw.value,
-            site_id: id.value,
             db_action: 2
           });
           const ret = await fetch("/get-data/", {
