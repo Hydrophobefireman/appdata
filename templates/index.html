@@ -25,28 +25,30 @@
       <div><input type="password" id="password" placeholder="password" /></div>
       <div><button>Go</button></div>
       <script>
-        const $ = e => document.querySelector(e);
-        const host = $("#site-host");
-        const pw = $("#password");
-        const button = $("button");
-        button.onclick = async () => {
-          const data = JSON.stringify({
-            $origin: host.value,
-            password: pw.value,
-            db_action: 2
-          });
-          const ret = await fetch("/get-data/", {
-            method: "post",
-            headers: { "content-type": "application/json" },
-            body: data
-          });
-          const js = await ret.json();
-          const d = JSON.stringify(js, null, 2);
-          const pre = document.createElement("pre");
-          pre.textContent = d;
-          document.body.innerHTML = "";
-          document.body.appendChild(pre);
-        };
+        (() => {
+          const $ = e => document.querySelector(e);
+          const host = $("#site-host");
+          const pw = $("#password");
+          const button = $("button");
+          button.onclick = async () => {
+            const data = JSON.stringify({
+              $origin: host.value,
+              password: pw.value,
+              db_action: 2
+            });
+            const ret = await fetch("/get-data/", {
+              method: "post",
+              headers: { "content-type": "application/json" },
+              body: data
+            });
+            const js = await ret.json();
+            const d = JSON.stringify(js, null, 2);
+            const pre = document.createElement("pre");
+            pre.textContent = d;
+            document.body.innerHTML = "";
+            document.body.appendChild(pre);
+          };
+        })();
       </script>
     </div>
   </body>
